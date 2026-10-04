@@ -18,6 +18,7 @@ import { WishGenerator } from './components/WishGenerator';
 import { VirtualCake } from './components/VirtualCake';
 import { SurpriseBox } from './components/SurpriseBox';
 import { SecretMessage } from './components/SecretMessage';
+import { SendMessageForm } from './components/SendMessageForm';
 import { TenWishes } from './components/TenWishes';
 import { DateBadge } from './components/DateBadge';
 import { CelebrationFireworksSection } from './components/CelebrationFireworksSection';
@@ -110,16 +111,19 @@ export function App() {
           {/* 11. Secret Message */}
           <SecretMessage />
 
-          {/* 12. 10 Birthday Wishes */}
+          {/* 12. Send Message / Wish Form (Formspree Integrated) */}
+          <SendMessageForm />
+
+          {/* 13. 10 Birthday Wishes */}
           <TenWishes />
 
-          {/* 13. Birthday Countdown / Special Date */}
+          {/* 14. Birthday Countdown / Special Date */}
           <DateBadge />
 
-          {/* 14. Interactive Fireworks Celebration */}
+          {/* 15. Interactive Fireworks Celebration */}
           <CelebrationFireworksSection />
 
-          {/* 15. Final Cinematic Section */}
+          {/* 16. Final Cinematic Section */}
           <FinalCinematicSection onReplay={handleReplay} />
 
           {/* Footer */}
