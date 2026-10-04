@@ -16,6 +16,7 @@ import { MemoryTimeline } from './components/MemoryTimeline';
 import { WhySpecial } from './components/WhySpecial';
 import { WishGenerator } from './components/WishGenerator';
 import { VirtualCake } from './components/VirtualCake';
+import { BirthdayGame } from './components/BirthdayGame';
 import { SurpriseBox } from './components/SurpriseBox';
 import { SecretMessage } from './components/SecretMessage';
 import { SendMessageForm } from './components/SendMessageForm';
@@ -105,25 +106,28 @@ export function App() {
           {/* 9. Virtual Birthday Cake Interaction */}
           <VirtualCake />
 
-          {/* 10. Surprise Box */}
+          {/* 10. Interactive Birthday Catch Game */}
+          <BirthdayGame />
+
+          {/* 11. Surprise Box */}
           <SurpriseBox />
 
-          {/* 11. Secret Message */}
+          {/* 12. Secret Message */}
           <SecretMessage />
 
-          {/* 12. Send Message / Wish Form (Formspree Integrated) */}
+          {/* 13. Send Message / Wish Form (Formspree Integrated) */}
           <SendMessageForm />
 
-          {/* 13. 10 Birthday Wishes */}
+          {/* 14. 10 Birthday Wishes */}
           <TenWishes />
 
-          {/* 14. Birthday Countdown / Special Date */}
+          {/* 15. Birthday Countdown / Special Date */}
           <DateBadge />
 
-          {/* 15. Interactive Fireworks Celebration */}
+          {/* 16. Interactive Fireworks Celebration */}
           <CelebrationFireworksSection />
 
-          {/* 16. Final Cinematic Section */}
+          {/* 17. Final Cinematic Section */}
           <FinalCinematicSection onReplay={handleReplay} />
 
           {/* Footer */}

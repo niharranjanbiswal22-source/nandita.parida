@@ -32,6 +32,16 @@ export interface BirthdayConfig {
   heroPhoto: string;
   photos: BirthdayPhoto[];
   musicPath: string;
+  socialLinks: {
+    instagram: string;
+    facebook: string;
+  };
+  developer: {
+    name: string;
+    code: string;
+    photo: string;
+    portfolio: string;
+  };
   openingText: {
     line1: string;
     line2: string;
@@ -72,6 +82,18 @@ export const birthdayConfig: BirthdayConfig = {
   birthdayFormattedDate: "04 October 2026",
   heroPhoto: "/images/photo1.jpg",
   musicPath: "/audio/birthday-music.mp3",
+
+  socialLinks: {
+    instagram: "https://www.instagram.com/nandita__parida_?stkn=MTR4eXJtYTNkd2p0bQ==",
+    facebook: "https://www.facebook.com/nandita.parida.574000"
+  },
+
+  developer: {
+    name: "Nihar Ranjan Biswal",
+    code: "NRB 04",
+    photo: "/images/developer-nrb04.png",
+    portfolio: "https://niharbiswal.vercel.app/"
+  },
 
   openingText: {
     line1: "Someone Special Has A Birthday Today...",
