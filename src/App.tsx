@@ -7,6 +7,7 @@ import { BackgroundParticles } from './components/BackgroundParticles';
 import { OpeningScreen } from './components/OpeningScreen';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
+import { BirthdayBannerSection } from './components/BirthdayBannerSection';
 import { PersonalMessage } from './components/PersonalMessage';
 import { PhotoGallery } from './components/PhotoGallery';
 import { PhotoSlideshowModal } from './components/PhotoSlideshowModal';
@@ -37,9 +38,12 @@ export function App() {
   };
 
   const handleStartJourney = () => {
-    const el = document.getElementById('message');
+    const el = document.getElementById('banner-section');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const msgEl = document.getElementById('message');
+      if (msgEl) msgEl.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -74,43 +78,48 @@ export function App() {
           {/* 1. Hero Section */}
           <HeroSection onStartJourney={handleStartJourney} />
 
-          {/* 2. Personal Birthday Message */}
+          {/* 2. Official Birthday Banner Section */}
+          <div id="banner-section">
+            <BirthdayBannerSection />
+          </div>
+
+          {/* 3. Personal Birthday Message */}
           <PersonalMessage />
 
-          {/* 3. Photo Gallery (10 Personal Photos + Lightbox) */}
+          {/* 4. Photo Gallery (10 Personal Photos + Lightbox) */}
           <PhotoGallery />
 
-          {/* 4. Cinematic Photo Reveal */}
+          {/* 5. Cinematic Photo Reveal */}
           <CinematicReveal />
 
-          {/* 5. Memory Timeline */}
+          {/* 6. Memory Timeline */}
           <MemoryTimeline />
 
-          {/* 6. Why You're Special */}
+          {/* 7. Why You're Special */}
           <WhySpecial />
 
-          {/* 7. Birthday Wish Generator */}
+          {/* 8. Birthday Wish Generator */}
           <WishGenerator />
 
-          {/* 8. Virtual Birthday Cake Interaction */}
+          {/* 9. Virtual Birthday Cake Interaction */}
           <VirtualCake />
 
-          {/* 9. Surprise Box */}
+          {/* 10. Surprise Box */}
           <SurpriseBox />
 
-          {/* 10. Secret Message */}
+          {/* 11. Secret Message */}
           <SecretMessage />
 
-          {/* 11. 10 Birthday Wishes */}
+          {/* 12. 10 Birthday Wishes */}
           <TenWishes />
 
-          {/* 12. Birthday Countdown / Special Date */}
+          {/* 13. Birthday Countdown / Special Date */}
           <DateBadge />
 
-          {/* 13. Interactive Fireworks Celebration */}
+          {/* 14. Interactive Fireworks Celebration */}
           <CelebrationFireworksSection />
 
-          {/* 14. Final Cinematic Section */}
+          {/* 15. Final Cinematic Section */}
           <FinalCinematicSection onReplay={handleReplay} />
 
           {/* Footer */}
