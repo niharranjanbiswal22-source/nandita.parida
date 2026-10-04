@@ -1,10 +1,13 @@
-// Web Audio API Synthesizer & Sound FX Engine for Nandita's Birthday Website
+// Web Audio API Sound FX Engine & Audio Loop Control for Nandita's Birthday Website
 
 let audioCtx: AudioContext | null = null;
-let bgMusicGain: GainNode | null = null;
-let isMusicPlaying = false;
-let musicInterval: number | null = null;
 let htmlAudioElement: HTMLAudioElement | null = null;
+let isMusicPlaying = false;
+let timeUpdateListener: (() => void) | null = null;
+
+// Time bounds in seconds (1 min 40 sec = 100s to 2 min 30 sec = 150s)
+const LOOP_START_TIME = 100; // 1:40
+const LOOP_END_TIME = 150;   // 2:30
 
 function getAudioContext(): AudioContext {
   if (!audioCtx) {
@@ -17,7 +20,7 @@ function getAudioContext(): AudioContext {
   return audioCtx;
 }
 
-// Play soft piano note
+// Play soft piano tone for UI feedback
 export function playPianoNote(freq: number, duration: number = 1.2, volume: number = 0.15) {
   try {
     const ctx = getAudioContext();
@@ -27,7 +30,6 @@ export function playPianoNote(freq: number, duration: number = 1.2, volume: numb
     osc.type = 'sine';
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
-    // Soft attack and gentle decay
     gain.gain.setValueAtTime(0.001, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.08);
     gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
@@ -42,7 +44,7 @@ export function playPianoNote(freq: number, duration: number = 1.2, volume: numb
   }
 }
 
-// Chime / Sparkle effect for candle blow or wish generator
+// Sparkle chime effect for wish generator or candle blow
 export function playSparkleSound() {
   try {
     const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; // C5, E5, G5, C6, E6
@@ -56,10 +58,9 @@ export function playSparkleSound() {
   }
 }
 
-// Firework celebration explosion sound
+// Celebration sound for fireworks
 export function playCelebrationSound() {
   try {
-    const ctx = getAudioContext();
     const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
     notes.forEach((freq, i) => {
       setTimeout(() => {
@@ -101,54 +102,34 @@ export function playBlowSound() {
     whiteNoise.start();
     whiteNoise.stop(ctx.currentTime + 0.8);
 
-    // Followed by sparkle chime
     setTimeout(() => playSparkleSound(), 400);
   } catch (e) {
     console.error(e);
   }
 }
 
-// Ambient Background Happy Birthday Melody Loop (Piano / Music Box synth)
-const happyBirthdayMelody = [
-  { note: 261.63, duration: 0.4 }, // G4 / C4
-  { note: 261.63, duration: 0.4 },
-  { note: 293.66, duration: 0.8 },
-  { note: 261.63, duration: 0.8 },
-  { note: 349.23, duration: 0.8 },
-  { note: 329.63, duration: 1.4 },
-
-  { note: 261.63, duration: 0.4 },
-  { note: 261.63, duration: 0.4 },
-  { note: 293.66, duration: 0.8 },
-  { note: 261.63, duration: 0.8 },
-  { note: 392.00, duration: 0.8 },
-  { note: 349.23, duration: 1.4 },
-
-  { note: 261.63, duration: 0.4 },
-  { note: 261.63, duration: 0.4 },
-  { note: 523.25, duration: 0.8 },
-  { note: 440.00, duration: 0.8 },
-  { note: 349.23, duration: 0.8 },
-  { note: 329.63, duration: 0.8 },
-  { note: 293.66, duration: 1.4 },
-
-  { note: 466.16, duration: 0.4 },
-  { note: 466.16, duration: 0.4 },
-  { note: 440.00, duration: 0.8 },
-  { note: 349.23, duration: 0.8 },
-  { note: 392.00, duration: 0.8 },
-  { note: 349.23, duration: 1.8 }
-];
-
+// Start custom audio song looping from 1:40 (100s) to 2:30 (150s)
 export function startBackgroundMusic(audioPath: string = "/audio/birthday-music.mp3"): boolean {
-  if (isMusicPlaying) return true;
-
-  // Try HTML5 Audio first if valid
   try {
     if (!htmlAudioElement) {
       htmlAudioElement = new Audio(audioPath);
-      htmlAudioElement.loop = true;
-      htmlAudioElement.volume = 0.4;
+      htmlAudioElement.volume = 0.6;
+    }
+
+    // Attach precise loop boundary listener (100s to 150s)
+    if (!timeUpdateListener) {
+      timeUpdateListener = () => {
+        if (!htmlAudioElement) return;
+        if (htmlAudioElement.currentTime >= LOOP_END_TIME || htmlAudioElement.currentTime < LOOP_START_TIME) {
+          htmlAudioElement.currentTime = LOOP_START_TIME;
+        }
+      };
+      htmlAudioElement.addEventListener('timeupdate', timeUpdateListener);
+    }
+
+    // Set initial start position at 1m 40s (100 seconds)
+    if (htmlAudioElement.currentTime < LOOP_START_TIME || htmlAudioElement.currentTime >= LOOP_END_TIME) {
+      htmlAudioElement.currentTime = LOOP_START_TIME;
     }
 
     const promise = htmlAudioElement.play();
@@ -157,44 +138,23 @@ export function startBackgroundMusic(audioPath: string = "/audio/birthday-music.
         .then(() => {
           isMusicPlaying = true;
         })
-        .catch(() => {
-          // Fallback to Web Audio Synthesizer!
-          startSynthMelody();
+        .catch((err) => {
+          console.warn("Autoplay deferred until user interaction", err);
+          isMusicPlaying = false;
         });
     } else {
       isMusicPlaying = true;
     }
   } catch (e) {
-    startSynthMelody();
+    console.error("Audio playback error:", e);
+    isMusicPlaying = false;
   }
 
   return true;
 }
 
-function startSynthMelody() {
-  if (isMusicPlaying) return;
-  isMusicPlaying = true;
-
-  let noteIdx = 0;
-  const playNext = () => {
-    if (!isMusicPlaying) return;
-    const item = happyBirthdayMelody[noteIdx];
-    playPianoNote(item.note, item.duration * 1.5, 0.08);
-
-    noteIdx = (noteIdx + 1) % happyBirthdayMelody.length;
-    const delay = item.duration * 750;
-    musicInterval = window.setTimeout(playNext, delay);
-  };
-
-  playNext();
-}
-
 export function stopBackgroundMusic() {
   isMusicPlaying = false;
-  if (musicInterval !== null) {
-    clearTimeout(musicInterval);
-    musicInterval = null;
-  }
   if (htmlAudioElement) {
     htmlAudioElement.pause();
   }
